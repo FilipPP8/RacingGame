@@ -6,11 +6,13 @@ public class CarController : MonoBehaviour
 {
 
     [SerializeField] private Rigidbody _rb;
+    public Rigidbody RB => _rb;
 
     [Header("Moving and turning")]
     [SerializeField] private float _acceleration; 
     [SerializeField] private float _reverseAcceleration;
     [SerializeField] private float _maxSpeed;
+    public float MaxSpeed => _maxSpeed;
     [SerializeField] private float _turnForce;
     private Vector3 _turnVector;
     private float _speedInput, _turnInput;
@@ -36,6 +38,9 @@ public class CarController : MonoBehaviour
     [SerializeField] private float _maxEmission;
     private float _emissionFadeSpeed = 50f;
     private float _emissionRate;
+
+    [Header("SFX")]
+    [SerializeField] private AudioSource _engineSound;
     void Start()
     {
         _rb.transform.parent = null;
@@ -57,17 +62,11 @@ public class CarController : MonoBehaviour
 
         _turnInput = Input.GetAxis("Horizontal");
         
-        if (_isGrounded && Input.GetAxis("Vertical") != 0)
-        {
-            _turnVector = new Vector3(0f,_turnInput * _turnForce * Time.deltaTime * Mathf.Sign(_speedInput) * (_rb.velocity.magnitude / _maxSpeed), 0f);
 
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + _turnVector);
-        }
 
         _leftFrontWheel.localRotation = Quaternion.Euler(_leftFrontWheel.localRotation.eulerAngles.x, (_turnInput * _maxWheelRotation) - 180, _leftFrontWheel.localRotation.eulerAngles.z);
         _rightFrontWheel.localRotation = Quaternion.Euler(_rightFrontWheel.localRotation.eulerAngles.x, (_turnInput * _maxWheelRotation), _rightFrontWheel.localRotation.eulerAngles.z);
 
-        transform.position = _rb.transform.position;
 
 
         if(_isGrounded && (Mathf.Abs(_turnInput) > .5f || (_rb.velocity.magnitude < _maxSpeed * 0.5f && _rb.velocity.magnitude !=0)))
@@ -88,6 +87,8 @@ public class CarController : MonoBehaviour
 
             emissionModule.rateOverTime = _emissionRate;
         }
+
+        _engineSound.pitch = 1f + ((_rb.velocity.magnitude / _maxSpeed)*1.3f);
     }
 
     private void FixedUpdate() 
@@ -129,5 +130,15 @@ public class CarController : MonoBehaviour
         {
             _rb.velocity = _rb.velocity.normalized * _maxSpeed; 
         }
+
+        if (_isGrounded && Input.GetAxis("Vertical") != 0)
+        {
+            _turnVector = new Vector3(0f, _turnInput * _turnForce * Time.deltaTime * Mathf.Sign(_speedInput) * (_rb.velocity.magnitude / _maxSpeed), 0f);
+
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + _turnVector);
+        }
+
+        transform.position = _rb.transform.position;
+
     }
 }
