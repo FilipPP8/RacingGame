@@ -41,6 +41,14 @@ public class CarController : MonoBehaviour
 
     [Header("SFX")]
     [SerializeField] private AudioSource _engineSound;
+    [SerializeField] private AudioSource _hitSound;
+    [SerializeField] private AudioSource _skidSound;
+    private float _skidSoundFade = 2;
+
+    private void Awake()
+    {
+        CarCollisionController.OnCarCollided += PlayHitSound;
+    }
     void Start()
     {
         _rb.transform.parent = null;
@@ -138,7 +146,23 @@ public class CarController : MonoBehaviour
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + _turnVector);
         }
 
+        if(_isGrounded && Mathf.Abs(_turnInput) > 0.5f)
+        {
+            _skidSound.volume = 1f;
+        }
+        else
+        {
+            _skidSound.volume = Mathf.MoveTowards(_skidSound.volume, 0f, _skidSoundFade * Time.deltaTime);
+        }
+
         transform.position = _rb.transform.position;
 
+    }
+
+    private void PlayHitSound(bool collided)
+    {
+        _hitSound.Stop();
+        _hitSound.pitch = Random.Range(0.7f, 1.4f);
+        _hitSound.Play();
     }
 }
