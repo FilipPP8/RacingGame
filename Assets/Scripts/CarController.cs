@@ -146,7 +146,7 @@ public class CarController : MonoBehaviour
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + _turnVector);
         }
 
-        if(_isGrounded && Mathf.Abs(_turnInput) > 0.5f)
+        if (_isGrounded && Mathf.Abs(_turnInput) > 0.5f)
         {
             _skidSound.volume = 1f;
         }
@@ -155,7 +155,12 @@ public class CarController : MonoBehaviour
             _skidSound.volume = Mathf.MoveTowards(_skidSound.volume, 0f, _skidSoundFade * Time.deltaTime);
         }
 
-        transform.position = _rb.transform.position;
+        if(Input.GetKey(KeyCode.R))
+        {
+            transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+        }
+
+       transform.position = _rb.transform.position;
 
     }
 
@@ -165,4 +170,5 @@ public class CarController : MonoBehaviour
         _hitSound.pitch = Random.Range(0.7f, 1.4f);
         _hitSound.Play();
     }
+
 }
