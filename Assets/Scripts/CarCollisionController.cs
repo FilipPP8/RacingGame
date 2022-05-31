@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CarCollisionController : MonoBehaviour
 {
-    public static event System.Action<bool> OnCarCollided;
+    public static event Action<bool> OnCarCollided;
+    public static event Action<bool> OnLapCompleted;
+
     private int _groundLayerNumber = 7;
 
     private int _nextCheckpoint = 0;
-    private int _completedLaps = 0;
 
     private void OnCollisionEnter(Collision other)
     {
@@ -33,12 +35,15 @@ public class CarCollisionController : MonoBehaviour
             if (_nextCheckpoint == RaceManager.Instance.Checkpoints.Length)
             {
                 _nextCheckpoint = 0;
-                _completedLaps++;
+                LapCompleted();
                 Debug.Log("You've completed a lap!");
             }
-
-
         }
+    }
+
+    private void LapCompleted()
+    {
+        OnLapCompleted?.Invoke(true);
     }
 
 }
