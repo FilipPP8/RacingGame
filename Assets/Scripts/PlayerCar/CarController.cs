@@ -7,6 +7,8 @@ public class CarController : MonoBehaviour
     [SerializeField] private Rigidbody _rb;
     public Rigidbody RB => _rb;
 
+    [SerializeField] private bool _isPlayer;
+
     [Header("Moving and turning")]
     [SerializeField] private float _acceleration; 
     [SerializeField] private float _reverseAcceleration;
@@ -40,23 +42,32 @@ public class CarController : MonoBehaviour
 
     [Header("SFX")]
     [SerializeField] private AudioSource _engineSound;
-    [SerializeField] private AudioSource _hitSound;
     [SerializeField] private AudioSource _skidSound;
     private float _skidSoundFade = 2;
 
-    private void Awake()
-    {
-        CarCollisionController.OnCarCollided += PlayHitSound;
-    }
+    
+    private int _nextCheckpoint = 0;
+    private int _currentLap = 1;
+    private float _lapTime = 0;
+    private float _bestLapTime = 0;
+
+ 
     void Start()
     {
         _rb.transform.parent = null;
         _dragOnGround = _rb.drag;
+        UIManager.Instance._lapCount.text = _currentLap + "/" + RaceManager.Instance._totalLaps;
+
     }
 
     void Update()
     {
-
+        _lapTime += Time.deltaTime;
+        if (_isPlayer)
+        {
+            var lapTS = System.TimeSpan.FromSeconds(_lapTime);
+            UIManager.Instance._lapTimer.text = string.Format("{0:00}m{1:00}.{2:00}s", lapTS.Minutes, lapTS.Seconds, lapTS.Milliseconds);
+            
             _speedInput = 0f;
 
             if (Input.GetAxis("Vertical") > 0)
@@ -69,7 +80,7 @@ public class CarController : MonoBehaviour
             }
 
             _turnInput = Input.GetAxis("Horizontal");
-
+        }
 
         _leftFrontWheel.localRotation = Quaternion.Euler(_leftFrontWheel.localRotation.eulerAngles.x, (_turnInput * _maxWheelRotation) - 180, _leftFrontWheel.localRotation.eulerAngles.z);
        
@@ -97,6 +108,15 @@ public class CarController : MonoBehaviour
         }
 
         _engineSound.pitch = 1f + ((_rb.velocity.magnitude / _maxSpeed)*1.3f);
+
+        if (_isGrounded && Mathf.Abs(_turnInput) > 0.5f)
+        {
+            _skidSound.volume = 1f;
+        }
+        else
+        {
+            _skidSound.volume = Mathf.MoveTowards(_skidSound.volume, 0f, _skidSoundFade * Time.deltaTime);
+        }
     }
 
     private void FixedUpdate() 
@@ -146,14 +166,7 @@ public class CarController : MonoBehaviour
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + _turnVector);
         }
 
-        if (_isGrounded && Mathf.Abs(_turnInput) > 0.5f)
-        {
-            _skidSound.volume = 1f;
-        }
-        else
-        {
-            _skidSound.volume = Mathf.MoveTowards(_skidSound.volume, 0f, _skidSoundFade * Time.deltaTime);
-        }
+
 
         if(Input.GetKey(KeyCode.R))
         {
@@ -164,11 +177,37 @@ public class CarController : MonoBehaviour
 
     }
 
-    private void PlayHitSound(bool collided)
+    public void CheckpointHit(int cpNumber)
     {
-        _hitSound.Stop();
-        _hitSound.pitch = Random.Range(0.7f, 1.4f);
-        _hitSound.Play();
+        if (cpNumber == _nextCheckpoint)
+        {
+            _nextCheckpoint++;
+
+            if (_nextCheckpoint == RaceManager.Instance._checkpoints.Length)
+            {
+                _nextCheckpoint = 0;
+                LapCompleted();
+            }
+        }
     }
 
+    public void LapCompleted()
+    {
+        _currentLap++;
+
+        if (_lapTime < _bestLapTime || _bestLapTime == 0)
+        {
+            _bestLapTime = _lapTime;
+        }
+
+        _lapTime = 0f;
+
+        if (_isPlayer)
+        {
+                var bestLapTS = System.TimeSpan.FromSeconds(_bestLapTime);
+                UIManager.Instance._bestLapTime.text = string.Format("{0:00}m{1:00}.{2:000}s", bestLapTS.Minutes, bestLapTS.Seconds, bestLapTS.Milliseconds);
+
+                UIManager.Instance._lapCount.text = _currentLap + "/" + RaceManager.Instance._totalLaps;
+        }   
+    }
 }
