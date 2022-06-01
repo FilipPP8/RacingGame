@@ -9,9 +9,11 @@ public class CameraController : MonoBehaviour
 
     [SerializeField] private float _minDistance, _maxDistance;
     private float _activeDistance;
+
+    [SerializeField] private Transform _startTargetOffset;
     void Awake()
     {
-        _offsetDirection = transform.position - _car.transform.position;
+        _offsetDirection = transform.position - _startTargetOffset.position;
 
         _activeDistance = _minDistance;
 

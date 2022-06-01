@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
-
     [SerializeField] private Rigidbody _rb;
     public Rigidbody RB => _rb;
 
@@ -57,22 +56,23 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        _speedInput = 0f;
 
-        if(Input.GetAxis("Vertical") > 0 )
-        {
-            _speedInput = Input.GetAxis("Vertical") * _acceleration;
-        }
-        else if (Input.GetAxis("Vertical") < 0)
-        {
-            _speedInput = Input.GetAxis("Vertical") * _reverseAcceleration;
-        }
+            _speedInput = 0f;
 
-        _turnInput = Input.GetAxis("Horizontal");
-        
+            if (Input.GetAxis("Vertical") > 0)
+            {
+                _speedInput = Input.GetAxis("Vertical") * _acceleration;
+            }
+            else if (Input.GetAxis("Vertical") < 0)
+            {
+                _speedInput = Input.GetAxis("Vertical") * _reverseAcceleration;
+            }
+
+            _turnInput = Input.GetAxis("Horizontal");
 
 
         _leftFrontWheel.localRotation = Quaternion.Euler(_leftFrontWheel.localRotation.eulerAngles.x, (_turnInput * _maxWheelRotation) - 180, _leftFrontWheel.localRotation.eulerAngles.z);
+       
         _rightFrontWheel.localRotation = Quaternion.Euler(_rightFrontWheel.localRotation.eulerAngles.x, (_turnInput * _maxWheelRotation), _rightFrontWheel.localRotation.eulerAngles.z);
 
 

@@ -7,6 +7,7 @@ public class CarCollisionController : MonoBehaviour
 {
     public static event Action<bool> OnCarCollided;
     public static event Action<bool> OnLapCompleted;
+    public static event Action<bool> OnRaceStarted;
 
     private int _groundLayerNumber = 7;
 
@@ -27,8 +28,6 @@ public class CarCollisionController : MonoBehaviour
             int cpNumber = other.GetComponent<Checkpoint>().checkpointNumber;
             if(cpNumber == _nextCheckpoint)
             {
-                Debug.Log("Hit checkpoint: " + cpNumber);
-
                 _nextCheckpoint++;
             }
 
@@ -36,14 +35,18 @@ public class CarCollisionController : MonoBehaviour
             {
                 _nextCheckpoint = 0;
                 LapCompleted();
-                Debug.Log("You've completed a lap!");
             }
+        }
+        if(other.tag == "Start")
+        {
+            Destroy(other);
+            OnRaceStarted?.Invoke(true);
         }
     }
 
     private void LapCompleted()
     {
-        OnLapCompleted?.Invoke(true);
+            OnLapCompleted?.Invoke(true);
     }
 
 }
