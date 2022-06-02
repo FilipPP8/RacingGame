@@ -5,10 +5,9 @@ using UnityEngine;
 public class CarController : MonoBehaviour
 {
     [SerializeField] private Rigidbody _rb;
-    public Rigidbody RB => _rb;
-
     [SerializeField] private bool _isPlayer;
 
+    public Rigidbody RB => _rb;
     [Header("Moving and turning")]
     [SerializeField] private float _acceleration; 
     [SerializeField] private float _reverseAcceleration;
@@ -51,12 +50,30 @@ public class CarController : MonoBehaviour
     private float _lapTime = 0;
     private float _bestLapTime = 0;
 
+    [Header("AI")]
+    [SerializeField] private int _currentTarget;
+    private Vector3 _targetPosition;
+    private float _aiAccelerateSpeed = 1f;
+    private float _aiTurnSpeed = 0.8f;
+    private float _aiMaxTurn = 15f;
+    private float _aiReachPointRange = 5f;
+    private float _aiPointVariance = 3f;
+    private float _aiSpeedInput;
+    private float _aiSpeedModifier;
  
     void Start()
     {
         _rb.transform.parent = null;
         _dragOnGround = _rb.drag;
         UIManager.Instance._lapCount.text = _currentLap + "/" + RaceManager.Instance._totalLaps;
+
+        if(!_isPlayer)
+        {
+            _targetPosition = RaceManager.Instance._checkpoints[_currentTarget].transform.position;
+            RandomizeAITarget();
+
+            _aiSpeedModifier = Random.Range(0.8f, 1.1f);
+        }
 
     }
 
@@ -80,6 +97,37 @@ public class CarController : MonoBehaviour
             }
 
             _turnInput = Input.GetAxis("Horizontal");
+        }
+        else
+        {
+            _targetPosition.y = transform.position.y;
+            if(Vector3.Distance(transform.position,_targetPosition) < _aiReachPointRange)
+            {
+                SetNextAITarget();
+            }
+
+            Vector3 _targetDirection = _targetPosition - transform.position;
+            float angle = Vector3.Angle(_targetDirection, transform.forward);
+
+            Vector3 localPosition = transform.InverseTransformPoint(_targetPosition);
+            if(localPosition.x < 0f)
+            {
+                angle = -angle;
+            }
+
+            _turnInput = Mathf.Clamp(angle/_aiMaxTurn, -1f, 1f);
+
+            if(Mathf.Abs(angle) < _aiMaxTurn)
+            {
+                _aiSpeedInput = Mathf.MoveTowards(_aiSpeedInput, 1f, _aiAccelerateSpeed);
+            }
+            else
+            {
+                _aiSpeedInput = Mathf.MoveTowards(_aiSpeedInput, _aiTurnSpeed, _aiAccelerateSpeed);
+            }
+
+            _aiSpeedInput = 1f;
+            _speedInput = _aiSpeedInput * _acceleration * _aiSpeedModifier;
         }
 
         _leftFrontWheel.localRotation = Quaternion.Euler(_leftFrontWheel.localRotation.eulerAngles.x, (_turnInput * _maxWheelRotation) - 180, _leftFrontWheel.localRotation.eulerAngles.z);
@@ -159,7 +207,7 @@ public class CarController : MonoBehaviour
             _rb.velocity = _rb.velocity.normalized * _maxSpeed; 
         }
 
-        if (_isGrounded && Input.GetAxis("Vertical") != 0)
+        if (_isGrounded && _speedInput != 0)
         {
             _turnVector = new Vector3(0f, _turnInput * _turnForce * Time.deltaTime * Mathf.Sign(_speedInput) * (_rb.velocity.magnitude / _maxSpeed), 0f);
 
@@ -189,6 +237,14 @@ public class CarController : MonoBehaviour
                 LapCompleted();
             }
         }
+
+        if(!_isPlayer)
+        {
+            if(cpNumber == _currentTarget)
+            {
+                SetNextAITarget();
+            }
+        }
     }
 
     public void LapCompleted()
@@ -209,5 +265,21 @@ public class CarController : MonoBehaviour
 
                 UIManager.Instance._lapCount.text = _currentLap + "/" + RaceManager.Instance._totalLaps;
         }   
+    }
+
+    public void RandomizeAITarget()
+    {
+        _targetPosition += new Vector3(Random.Range(-_aiPointVariance, _aiPointVariance), 0f, Random.Range(-_aiPointVariance, _aiPointVariance));
+    }
+
+    public void SetNextAITarget()
+    {
+        _currentTarget++;
+        if (_currentTarget >= RaceManager.Instance._checkpoints.Length)
+        {
+            _currentTarget = 0;
+        }
+        _targetPosition = RaceManager.Instance._checkpoints[_currentTarget].transform.position;
+        RandomizeAITarget();
     }
 }
