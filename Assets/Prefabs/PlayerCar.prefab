@@ -14967,6 +14967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rb: {fileID: 567557867051647277}
+  _isPlayer: 1
   _acceleration: 8000
   _reverseAcceleration: 4000
   _maxSpeed: 30
@@ -14987,8 +14988,8 @@ MonoBehaviour:
   - {fileID: 567557865631552225}
   _maxEmission: 40
   _engineSound: {fileID: 567557865027057987}
-  _hitSound: {fileID: 567557866105747884}
   _skidSound: {fileID: 567557865317159607}
+  _currentTarget: 0
 --- !u!81 &567557866635830268
 AudioListener:
   m_ObjectHideFlags: 0
@@ -19926,6 +19927,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40090f9c33f70cf4a99faf2feb7b44e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _car: {fileID: 567557866635830270}
+  _hitSound: {fileID: 567557866105747884}
 --- !u!1001 &567557866913992148
 PrefabInstance:
   m_ObjectHideFlags: 0

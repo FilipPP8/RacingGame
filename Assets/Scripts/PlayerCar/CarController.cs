@@ -11,8 +11,7 @@ public class CarController : MonoBehaviour
     [Header("Moving and turning")]
     [SerializeField] private float _acceleration; 
     [SerializeField] private float _reverseAcceleration;
-    [SerializeField] private float _maxSpeed;
-    public float MaxSpeed => _maxSpeed;
+    public float maxSpeed;
     [SerializeField] private float _turnForce;
     private Vector3 _turnVector;
     private float _speedInput, _turnInput;
@@ -46,7 +45,9 @@ public class CarController : MonoBehaviour
 
     
     private int _nextCheckpoint = 0;
+    public int NextCheckpoint => _nextCheckpoint;
     private int _currentLap = 1;
+    public int CurrentLap => _currentLap;
     private float _lapTime = 0;
     private float _bestLapTime = 0;
 
@@ -136,7 +137,7 @@ public class CarController : MonoBehaviour
 
 
 
-        if(_isGrounded && (Mathf.Abs(_turnInput) > .5f || (_rb.velocity.magnitude < _maxSpeed * 0.5f && _rb.velocity.magnitude !=0)))
+        if(_isGrounded && (Mathf.Abs(_turnInput) > .5f || (_rb.velocity.magnitude < maxSpeed * 0.5f && _rb.velocity.magnitude !=0)))
         {
             _emissionRate = _maxEmission;
         }
@@ -155,7 +156,7 @@ public class CarController : MonoBehaviour
             emissionModule.rateOverTime = _emissionRate;
         }
 
-        _engineSound.pitch = 1f + ((_rb.velocity.magnitude / _maxSpeed)*1.3f);
+        _engineSound.pitch = 1f + ((_rb.velocity.magnitude / maxSpeed)*1.3f);
 
         if (_isGrounded && Mathf.Abs(_turnInput) > 0.5f)
         {
@@ -202,14 +203,14 @@ public class CarController : MonoBehaviour
             _rb.AddForce(-Vector3.up * _gravityModifier);
         }
 
-        if(_rb.velocity.magnitude > _maxSpeed)
+        if(_rb.velocity.magnitude > maxSpeed)
         {
-            _rb.velocity = _rb.velocity.normalized * _maxSpeed; 
+            _rb.velocity = _rb.velocity.normalized * maxSpeed; 
         }
 
         if (_isGrounded && _speedInput != 0)
         {
-            _turnVector = new Vector3(0f, _turnInput * _turnForce * Time.deltaTime * Mathf.Sign(_speedInput) * (_rb.velocity.magnitude / _maxSpeed), 0f);
+            _turnVector = new Vector3(0f, _turnInput * _turnForce * Time.deltaTime * Mathf.Sign(_speedInput) * (_rb.velocity.magnitude / maxSpeed), 0f);
 
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + _turnVector);
         }

@@ -23,7 +23,7 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        _activeDistance = _minDistance + ((_maxDistance - _minDistance) * (_car.RB.velocity.magnitude / _car.MaxSpeed));
+        _activeDistance = _minDistance + ((_maxDistance - _minDistance) * (_car.RB.velocity.magnitude / _car.maxSpeed));
         transform.position = _car.transform.position + (_offsetDirection * _activeDistance);      
     }
 }

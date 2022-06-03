@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     public TMP_Text _lapTimer;
     public TMP_Text _bestLapTime;
     public TMP_Text _lapCount;
+    public TMP_Text _playerPosition;
     
 
     private void Awake()
