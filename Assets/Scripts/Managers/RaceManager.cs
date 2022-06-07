@@ -30,6 +30,13 @@ public class RaceManager : MonoBehaviour
     private float _startCounter;
     private int _countdownCurrent = 3;
 
+    [SerializeField] private Transform[] _startPositions;
+    public int playerStartPosition;
+    public int aiNumberToSpawn;
+    [SerializeField] private List<CarController> _carsToSpawn = new List<CarController>();
+
+    public bool _raceCompleted;
+
     private void Awake()
     {
         if(Instance == null)
@@ -53,6 +60,26 @@ public class RaceManager : MonoBehaviour
         isStarting = true;
         _startCounter = _timeBetweenCounts;
         UIManager.Instance.countdown.text = _countdownCurrent + "!";
+
+        playerStartPosition = UnityEngine.Random.Range(0,aiNumberToSpawn+1);
+
+        _playerCar.transform.position = _startPositions[playerStartPosition].position;
+        _playerCar._rb.transform.position = _startPositions[playerStartPosition].position;
+
+
+        for(int i = 0; i < aiNumberToSpawn+1; i++)
+        {
+            if(i != playerStartPosition)
+            {
+                int selectedCar = UnityEngine.Random.Range(0, _carsToSpawn.Count);
+                _aICars.Add(Instantiate(_carsToSpawn[selectedCar], _startPositions[i].position, _startPositions[i].rotation));
+
+                if (_carsToSpawn.Count > aiNumberToSpawn - i)
+                {
+                    _carsToSpawn.RemoveAt(selectedCar);
+                }
+            }
+        }
     }
 
     private void Update()
@@ -144,6 +171,10 @@ public class RaceManager : MonoBehaviour
         }
     }
 
+    public void FinishRace()
+    {
+        _raceCompleted = true;
+    }
 
 
 }

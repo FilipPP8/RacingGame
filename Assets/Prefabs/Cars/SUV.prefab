@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 567557865027057986}
   - component: {fileID: 567557865027057987}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: EngineSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 567557865743169458}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Checks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -295,7 +295,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 567557865833622688}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: SurfaceAngleCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 567557865874940031}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: SFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -485,7 +485,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 567557866338045431}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -517,7 +517,7 @@ GameObject:
   - component: {fileID: 567557866635830269}
   - component: {fileID: 567557866635830270}
   - component: {fileID: 567557866635830268}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: SUV
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -585,7 +585,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 567557866635830271}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1 &567557867051647278
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,7 +600,7 @@ GameObject:
   - component: {fileID: 567557867051647276}
   - component: {fileID: 567557867051647277}
   - component: {fileID: 567557867051647248}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: MovingSphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}

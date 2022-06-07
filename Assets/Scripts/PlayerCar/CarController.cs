@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
-    [SerializeField] private Rigidbody _rb;
+    public Rigidbody _rb;
     [SerializeField] private bool _isPlayer;
 
     public Rigidbody RB => _rb;
@@ -269,15 +269,32 @@ public class CarController : MonoBehaviour
             _bestLapTime = _lapTime;
         }
 
-        _lapTime = 0f;
-
-        if (_isPlayer)
+        if (_currentLap <= RaceManager.Instance._totalLaps)
         {
+            _lapTime = 0f;
+
+            if (_isPlayer)
+            {
                 var bestLapTS = System.TimeSpan.FromSeconds(_bestLapTime);
                 UIManager.Instance.bestLapTime.text = string.Format("{0:00}m{1:00}.{2:000}s", bestLapTS.Minutes, bestLapTS.Seconds, bestLapTS.Milliseconds);
 
                 UIManager.Instance.lapCount.text = _currentLap + "/" + RaceManager.Instance._totalLaps;
-        }   
+            }
+        }
+        else
+        {
+            if(_isPlayer)
+            {
+                _isPlayer = false;
+                _aiSpeedModifier = 1f;
+                _targetPosition = RaceManager.Instance._checkpoints[_currentTarget].transform.position;
+                RandomizeAITarget();
+
+                var bestLapTS = System.TimeSpan.FromSeconds(_bestLapTime);
+                UIManager.Instance.bestLapTime.text = string.Format("{0:00}m{1:00}.{2:000}s", bestLapTS.Minutes, bestLapTS.Seconds, bestLapTS.Milliseconds);
+                RaceManager.Instance.FinishRace();
+            }
+        }
     }
 
     public void RandomizeAITarget()
