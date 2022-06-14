@@ -12,6 +12,9 @@ public class UIManager : MonoBehaviour
     public TMP_Text lapCount;
     public TMP_Text playerPosition;
     public TMP_Text countdown;
+    public TMP_Text resultText;
+    public GameObject resultsScreen;
+
 
     private float _disableTimer = 1f;
     private bool _hasRaceStarted;
@@ -51,6 +54,12 @@ public class UIManager : MonoBehaviour
     {
         _hasRaceStarted = true;
 
+    }
+
+    public void ExitRace()
+    {
+        RaceManager.Instance.ExitRace();
+        resultsScreen.SetActive(false);
     }
 
 }

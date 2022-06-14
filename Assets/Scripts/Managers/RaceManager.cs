@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class RaceManager : MonoBehaviour
 {
@@ -36,6 +37,8 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private List<CarController> _carsToSpawn = new List<CarController>();
 
     public bool _raceCompleted;
+
+    public string raceCompleteScene;
 
     private void Awake()
     {
@@ -174,7 +177,32 @@ public class RaceManager : MonoBehaviour
     public void FinishRace()
     {
         _raceCompleted = true;
+
+        switch(_playerPosition)
+        {
+            case 1:
+                
+                UIManager.Instance.resultText.text = "You finished 1st!";
+
+                break;
+
+            case 2:
+                UIManager.Instance.resultText.text = "You finished 2nd!";
+                break;
+            case 3:
+                UIManager.Instance.resultText.text = "You finished 3rd!";
+                break;
+            default:
+                UIManager.Instance.resultText.text = "You finished " + _playerPosition +"th!";
+                break;
+        }
+
+        UIManager.Instance.resultsScreen.SetActive(true);
     }
 
+    public void ExitRace()
+    {
+        SceneManager.LoadScene(raceCompleteScene);
+    }
 
 }
