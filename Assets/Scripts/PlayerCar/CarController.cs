@@ -5,9 +5,8 @@ using UnityEngine;
 public class CarController : MonoBehaviour
 {
     public Rigidbody _rb;
-    [SerializeField] private bool _isPlayer;
-
-    public Rigidbody RB => _rb;
+    public bool isPlayer;
+    
     [Header("Moving and turning")]
     [SerializeField] private float _acceleration; 
     [SerializeField] private float _reverseAcceleration;
@@ -69,7 +68,7 @@ public class CarController : MonoBehaviour
         _dragOnGround = _rb.drag;
         UIManager.Instance.lapCount.text = _currentLap + "/" + RaceManager.Instance._totalLaps;
 
-        if(!_isPlayer)
+        if(!isPlayer)
         {
             _targetPosition = RaceManager.Instance._checkpoints[_currentTarget].transform.position;
             RandomizeAITarget();
@@ -86,7 +85,7 @@ public class CarController : MonoBehaviour
         {
 
             _lapTime += Time.deltaTime;
-            if (_isPlayer)
+            if (isPlayer)
             {
                 var lapTS = System.TimeSpan.FromSeconds(_lapTime);
                 UIManager.Instance.lapTimer.text = string.Format("{0:00}m{1:00}.{2:00}s", lapTS.Minutes, lapTS.Seconds, lapTS.Milliseconds);
@@ -251,7 +250,7 @@ public class CarController : MonoBehaviour
             }
         }
 
-        if(!_isPlayer)
+        if(!isPlayer)
         {
             if(cpNumber == _currentTarget)
             {
@@ -273,7 +272,7 @@ public class CarController : MonoBehaviour
         {
             _lapTime = 0f;
 
-            if (_isPlayer)
+            if (isPlayer)
             {
                 var bestLapTS = System.TimeSpan.FromSeconds(_bestLapTime);
                 UIManager.Instance.bestLapTime.text = string.Format("{0:00}m{1:00}.{2:000}s", bestLapTS.Minutes, bestLapTS.Seconds, bestLapTS.Milliseconds);
@@ -283,9 +282,9 @@ public class CarController : MonoBehaviour
         }
         else
         {
-            if(_isPlayer)
+            if(isPlayer)
             {
-                _isPlayer = false;
+                isPlayer = false;
                 _aiSpeedModifier = 1f;
                 _targetPosition = RaceManager.Instance._checkpoints[_currentTarget].transform.position;
                 RandomizeAITarget();

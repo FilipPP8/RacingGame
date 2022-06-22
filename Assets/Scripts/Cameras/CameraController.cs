@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private CarController _car;
+    public CarController _targetCar;
     private Vector3 _offsetDirection;
 
     [SerializeField] private float _minDistance, _maxDistance;
@@ -23,7 +23,7 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        _activeDistance = _minDistance + ((_maxDistance - _minDistance) * (_car.RB.velocity.magnitude / _car.maxSpeed));
-        transform.position = _car.transform.position + (_offsetDirection * _activeDistance);      
+        _activeDistance = _minDistance + ((_maxDistance - _minDistance) * (_targetCar._rb.velocity.magnitude / _targetCar.maxSpeed));
+        transform.position = _targetCar.transform.position + (_offsetDirection * _activeDistance);      
     }
 }

@@ -5,10 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public string levelToLoad;
     public void StartGame()
     {
-        SceneManager.LoadScene(levelToLoad);
+        SceneManager.LoadScene(RaceInfoManager.Instance.trackToLoad);
     }
 
     public void QuitGame()
