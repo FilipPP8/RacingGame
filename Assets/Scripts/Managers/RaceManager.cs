@@ -55,6 +55,9 @@ public class RaceManager : MonoBehaviour
     }
     void Start()
     {
+        _totalLaps = RaceInfoManager.Instance.lapsNumber;
+        aiNumberToSpawn = RaceInfoManager.Instance.aiNumber;
+
         for(int i = 0; i < _checkpoints.Length; i++)
         {
             _checkpoints[i].checkpointNumber = i;
@@ -66,9 +69,11 @@ public class RaceManager : MonoBehaviour
 
         playerStartPosition = UnityEngine.Random.Range(0,aiNumberToSpawn+1);
 
-        _playerCar.transform.position = _startPositions[playerStartPosition].position;
-        _playerCar._rb.transform.position = _startPositions[playerStartPosition].position;
+        _playerCar = Instantiate(RaceInfoManager.Instance.racerToUse, _startPositions[playerStartPosition].position, _startPositions[playerStartPosition].rotation);
+        _playerCar.isPlayer = true;
+        _playerCar.GetComponent<AudioListener>().enabled = true;
 
+        CameraSwitch.Instance.SetTarget(_playerCar);
 
         for(int i = 0; i < aiNumberToSpawn+1; i++)
         {
@@ -83,6 +88,8 @@ public class RaceManager : MonoBehaviour
                 }
             }
         }
+        UIManager.Instance.playerPosition.text = (playerStartPosition+1) + "/" + (_aICars.Count + 1);
+
     }
 
     private void Update()

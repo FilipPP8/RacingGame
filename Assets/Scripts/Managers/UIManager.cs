@@ -13,7 +13,8 @@ public class UIManager : MonoBehaviour
     public TMP_Text playerPosition;
     public TMP_Text countdown;
     public TMP_Text resultText;
-    public GameObject resultsScreen;
+    public GameObject resultsScreen, pauseScreen;
+    public bool isPaused;
 
 
     private float _disableTimer = 1f;
@@ -48,6 +49,11 @@ public class UIManager : MonoBehaviour
                 _hasRaceStarted = false;
             }
         }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseUnpause();
+        }
     }
 
     public void RaceStarted(TMP_Text textToDisable)
@@ -58,8 +64,27 @@ public class UIManager : MonoBehaviour
 
     public void ExitRace()
     {
+        Time.timeScale = 1f;
         RaceManager.Instance.ExitRace();
         resultsScreen.SetActive(false);
     }
 
+    public void PauseUnpause()
+    {
+        isPaused = !isPaused;
+        pauseScreen.SetActive(isPaused);
+        if(isPaused)
+        {
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            Time.timeScale = 1f;
+        }
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
